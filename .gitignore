@@ -1,0 +1,9 @@
+/.idea
+/.vscode
+/vendor
+*.log
+.env
+.*
+!.gitignore
+*.lock
+runtime
