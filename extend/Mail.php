@@ -28,7 +28,7 @@ class Mail
             $mail->Password   = env('smtp.password', '');                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = env('smtp.port', 465);                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
+            $mail->CharSet    = PHPMailer::CHARSET_UTF8;
             //Recipients
             $mail->setFrom(env('smtp.user'), env('smtp.name'));
             $mail->addAddress($to);     //Add a recipient

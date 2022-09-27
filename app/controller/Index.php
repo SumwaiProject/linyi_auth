@@ -20,7 +20,8 @@ class Index extends BaseController
      * @return void
      */
     public function sendmail(){
-        // return Mail::send('admin@lim1.cn', "Hello", '<a href="https://sumwai.cn/">查看详情</a>') ? 'send mail success' : 'failed to send mail';
+        // return Mail::send('2811187643@qq.com', "关于某项规定的具体实行", '<a href="https://sumwai.cn/">查看详情</a>') ? 'send mail success' : 'failed to send mail';
+        // return Mail::send('2811187643@qq.com', "对于规定的定制情况总结", '<a href="https://sumwai.cn/">查看详情</a>') ? 'send mail success' : 'failed to send mail';
     }
 
 }
