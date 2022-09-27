@@ -16,7 +16,7 @@ abstract class BaseController
 {
     /**
      * Request实例
-     * @var \think\Request
+     * @var \app\Request
      */
     protected $request;
 
@@ -55,6 +55,8 @@ abstract class BaseController
     // 初始化
     protected function initialize()
     {
+        // decode aes data
+        $this->request->decode();
     }
 
     /**
