@@ -8,14 +8,16 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
+
+use app\middleware\verify;
 use think\facade\Route;
 
-Route::group("user", function (){
+Route::group("user", function () {
     // 注册
-    Route::rule("signup", "user/signup");
+    Route::rule("signup", "user/signup")->middleware(verify::class);
     // 登录
-    Route::rule("login", "user/signin");
-    Route::rule("signin", "user/signin");
+    Route::rule("login", "user/signin")->middleware(verify::class);
+    Route::rule("signin", "user/signin")->middleware(verify::class);
 
     // 查询用户是否在线
     Route::rule("online/[:token]", "user/online");
@@ -37,3 +39,11 @@ Route::rule("heartbeat/[:token]", "user/heartbeat");
 
 // 获取变量内容
 Route::rule("var/[:name]", "index/var");
+
+// 发送验证码
+Route::rule('code/:action', 'index/sendmail');
+// Route::group('code', function () {
+//     Route::rule('signup', '/index/sendmail/action/signup');
+//     Route::rule('signin', '/index/sendmail/action/signin');
+//     Route::rule('login', '/index/sendmail/action/signin');
+// });

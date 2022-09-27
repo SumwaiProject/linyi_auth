@@ -10,5 +10,6 @@ use think\Model;
  */
 class KamiModel extends Model
 {
-    //
+    // TODO 待开发
+    protected $name = 'kami';
 }

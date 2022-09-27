@@ -1,6 +1,8 @@
 <?php
 // 应用公共文件
 
+use app\model\UserModel;
+use think\facade\Cache;
 use think\facade\Env;
 
 /**
@@ -62,4 +64,14 @@ function decrypt($ciphertext = '', $json = false)
         return json_decode($decoded, true);
     }
     return $decoded;
+}
+
+/**
+ * create salt str
+ *
+ * @return string
+ */
+function salt()
+{
+    return md5(uniqid());
 }

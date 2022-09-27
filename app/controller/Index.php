@@ -19,7 +19,12 @@ class Index extends BaseController
      *
      * @return void
      */
-    public function sendmail(){
+    public function sendmail(string $action = ''){
+        if (!in_array($action, ['signin', 'signup', 'login'])){
+            abort(404, 'action ' . $action . ' not found');
+        }
+        // TODO 发送指定邮件模板
+        return $action;
         // return Mail::send('2811187643@qq.com', "关于某项规定的具体实行", '<a href="https://sumwai.cn/">查看详情</a>') ? 'send mail success' : 'failed to send mail';
         // return Mail::send('2811187643@qq.com', "对于规定的定制情况总结", '<a href="https://sumwai.cn/">查看详情</a>') ? 'send mail success' : 'failed to send mail';
     }

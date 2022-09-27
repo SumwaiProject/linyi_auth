@@ -124,6 +124,6 @@ abstract class BaseController
             'code' => $code,
             'data' => [],
             'msg' => $msg
-        ]);
+        ], 'json');
     }
 }
