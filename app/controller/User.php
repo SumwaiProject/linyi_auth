@@ -39,7 +39,7 @@ class User extends BaseController
      * 
      * @return Json
      */
-    function signin(Request $request, string $email = '', string $password = '', string $verify = '')
+    function signin(Request $request, string $email = '', string $password = '')
     {
         // 验证输入参数
         try {
@@ -52,7 +52,6 @@ class User extends BaseController
         } catch (\Exception $e) {
             return $this->msg($e->getMessage(), -1);
         }
-        // TODO 检查验证码
 
         $UserModel = UserModel::where('email', $email)->findOrEmpty();
 
@@ -101,8 +100,6 @@ class User extends BaseController
             return $this->msg($e->getMessage(), -1);
         }
 
-        // TODO 检查验证码
-
 
         // 检查邮箱是否已被注册
         if (!UserModel::where('email', $email)->findOrEmpty()->isEmpty()) {
@@ -133,7 +130,7 @@ class User extends BaseController
     function heartbeat(string $token = '')
     {
         if (Cache::has($token)) {
-            // 为用户续上五分钟在线时间
+            // 为用户续上在线时间
             Cache::set($token, time(), Env::get('user.online', 600));
             return $this->success();
         }

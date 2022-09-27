@@ -14,7 +14,7 @@ class verify
      */
     public function handle($request, \Closure $next)
     {
-        // TODO 验证码
+        // TODO 验证码发送和验证
         return $next($request);
     }
 }
