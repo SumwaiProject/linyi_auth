@@ -19,8 +19,6 @@ class verify extends BaseController
      */
     public function handle($request, \Closure $next)
     {
-        // TODO 验证码发送和验证
-
         try {
             $verify = $request->param('verify');
             $email = $request->param('email');
