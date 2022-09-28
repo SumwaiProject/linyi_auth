@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\controller;
 
 use \app\BaseController;
+use app\model\KamiModel;
 use app\model\UserModel;
 use app\model\UserServiceModel;
 use app\Request;
@@ -203,6 +204,34 @@ class User extends BaseController
      */
     function cdk(string $token = '', string $cdk = '')
     {
+        $UserModel = UserModel::fromToken($token);
+
+        if ($UserModel->isEmpty() || !Cache::has($token)) {
+            return $this->msg('已掉线', -1);
+        }
+
+        $KamiModel = KamiModel::where('value', $cdk)->where('status', 0)->findOrEmpty();
+        if ($KamiModel->isEmpty()) {
+            return $this->msg('卡密不存在', -1);
+        }
+
+        $KamiModel->status = 1;
+        $KamiModel->save();
+
+        $UserServiceModel = UserServiceModel::where('user_id', $UserModel->id)->where('service', $KamiModel->service)->findOrEmpty();
+
+        if ($UserServiceModel->isEmpty()) {
+            $expire = time() + 86400 * $KamiModel->days;
+            UserServiceModel::create([
+                'user_id' => $UserModel->id,
+                'service' => $KamiModel->service,
+                'expire' => $expire,
+            ]);
+            return $this->success(['time' => $expire, 'datetime' => date('Y-m-d H:i:s', $expire)]);
+        }
+
+        $UserServiceModel->expire = $UserServiceModel->expire < time() ? time() + $KamiModel->days + 86400 : $UserServiceModel->expire + $KamiModel->days * 86400;
+        $UserServiceModel->save();
     }
 
     /**
