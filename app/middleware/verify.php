@@ -24,7 +24,7 @@ class verify extends BaseController
         try {
             $verify = $request->param('verify');
             $email = $request->param('email');
-            $key = $key;
+            $key = sprintf('send_code_%s', $email);
             $this->validate($request->param(), [
                 'email|邮箱' => 'require|email',
                 'verify|验证码' => 'min:6|max:6|number'
