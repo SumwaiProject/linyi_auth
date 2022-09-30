@@ -21,20 +21,6 @@ function expired(string $time = '')
 }
 
 /**
- * AES iv
- *
- * @return string
- */
-function iv()
-{
-    $result = '';
-    for ($i = 0; $i < 16; $i++) {
-        $result .= chr(0x0);
-    }
-    return $result;
-}
-
-/**
  * AES encode
  *
  * @param  string $plaintext 
@@ -42,10 +28,7 @@ function iv()
  */
 function encrypt($plaintext = '')
 {
-    $method = Env::get('aes.method', "AES-256-CBC");
-    $key = hash('sha256', Env::get('aes.password', '123456'), true);
-    $ciphertext = openssl_encrypt($plaintext, $method, $key, OPENSSL_RAW_DATA, iv());
-    return base64_encode($ciphertext);
+    return base64_encode(rc4(hash('sha256', Env::get('aes.password', '123456')), $plaintext));
 }
 
 /**
@@ -56,12 +39,23 @@ function encrypt($plaintext = '')
  */
 function decrypt($ciphertext = '', $json = false)
 {
-    $method = Env::get('aes.method', "AES-256-CBC");
-    $ciphertext = base64_decode($ciphertext);
-    $key = hash('sha256', Env::get('aes.password', '123456'), true);
-    $decoded = openssl_decrypt($ciphertext, $method, $key, OPENSSL_RAW_DATA, iv());
+    $decoded = rc4(hash('sha256', Env::get('aes.password', '123456')), base64_decode($ciphertext));
     if ($json) {
-        return json_decode($decoded, true);
+        if ($ret = json_decode($decoded, true)) {
+            return $ret;
+        }
+
+        if (strpos($decoded, '=') !== false && strpos($decoded, '&') !== false) {
+            $ret = [];
+            $arr = explode('&', $decoded);
+            foreach ($arr as &$v) {
+                list($key, $val) = explode('=', $v);
+                $ret[$key] = $val;
+            }
+            if (is_array($ret) && count($ret) > 0) {
+                return $ret;
+            }
+        }
     }
     return $decoded;
 }
@@ -74,4 +68,33 @@ function decrypt($ciphertext = '', $json = false)
 function salt()
 {
     return md5(uniqid());
+}
+
+function rc4($pwd, $data)
+{
+    $cipher      = '';
+    $key[]       = "";
+    $box[]       = "";
+    $pwd_length  = strlen($pwd);
+    $data_length = strlen($data);
+    for ($i = 0; $i < 256; $i++) {
+        $key[$i] = ord($pwd[$i % $pwd_length]);
+        $box[$i] = $i;
+    }
+    for ($j = $i = 0; $i < 256; $i++) {
+        $j       = ($j + $box[$i] + $key[$i]) % 256;
+        $tmp     = $box[$i];
+        $box[$i] = $box[$j];
+        $box[$j] = $tmp;
+    }
+    for ($a = $j = $i = 0; $i < $data_length; $i++) {
+        $a       = ($a + 1) % 256;
+        $j       = ($j + $box[$a]) % 256;
+        $tmp     = $box[$a];
+        $box[$a] = $box[$j];
+        $box[$j] = $tmp;
+        $k       = $box[(($box[$a] + $box[$j]) % 256)];
+        $cipher .= chr(ord($data[$i]) ^ $k);
+    }
+    return $cipher;
 }
