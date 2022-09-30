@@ -104,11 +104,11 @@ abstract class BaseController
      */
     function success($data = [])
     {
-        return Json::create([
+        return Json::create(encrypt(json_encode([
             'code' => 0,
             'data' => $data,
             'msg' => 'success',
-        ], 'json');
+        ])));
     }
 
     /**
@@ -120,10 +120,10 @@ abstract class BaseController
      */
     function msg($msg = '', $code = 0)
     {
-        return Json::create([
+        return Json::create(encrypt(json_encode([
             'code' => $code,
             'data' => [],
             'msg' => $msg
-        ], 'json');
+        ])));
     }
 }
