@@ -243,6 +243,7 @@ class User extends BaseController
      */
     function forget_password(string $email = '')
     {
+        // TODO send email
     }
 
     /**
@@ -258,5 +259,6 @@ class User extends BaseController
      */
     function reset_password(string $email = '', string $token = '', string $password = '')
     {
+        // TODO 重置密码
     }
 }
